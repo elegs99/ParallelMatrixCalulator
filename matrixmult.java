@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.io.File;
@@ -6,35 +7,75 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 class matrixmult{
-    public static int maxSize = 4;
-    public static int maxThreads = 4;
+    public static int rowA;
+    public static int colA;
+    public static int rowB;
+    public static int colB;
+    public static int[][] matA;
+    public static int[][] matB;
+    public static int[][] matC;
     public static AtomicInteger row= new AtomicInteger(0);
 
     public static void main(String[] args) {
+        //implementation 1 as discussed in meeting
         Runnable runnable = ()->{
             int i = row.get(); //i denotes row number of resultant matC
    
-            for (int j = 0; j < MAX; j++)
-                for (int k = 0; k < MAX; k++)
+            for (int j = 0; j < rowA; j++)
+                for (int k = 0; k < colB; k++)
                     matC[i][j] += matA[i][k] * matB[k][j];
 
             row.incrementAndGet();
         };
 
-        long start = System.nanoTime();
+        Scanner sc = new Scanner(System.in);
         ArrayList<Thread> threadList = new ArrayList<Thread>();
-        int matA[MAX][MAX];
-        int matB[MAX][MAX];
-        int matC[MAX][MAX];
 
-        for (int i = 0; i < MAX; i++) {
-            for (int j = 0; j < MAX; j++) {
-                matA[i][j] = rand();
-                matB[i][j] = rand();
+        System.out.println("Dimensions of matrix A:");
+        System.out.print("Row = ");
+        rowA = sc.nextInt();
+        System.out.print("Column = ");
+        colA = sc.nextInt();
+
+        System.out.println("Dimensions of matrix B:");
+        System.out.print("Row = ");
+        rowB = sc.nextInt();
+        System.out.print("Column = ");
+        colB = sc.nextInt();
+
+        if(colA!=rowB)
+        {
+            System.out.println("Matrix multiplication not possible");
+            return;
+        }
+
+        matA = new int[rowA][colA];
+        matB = new int[rowB][colB];
+        matC = new int[rowA][colB];
+
+        System.out.println("Enter matrix A:");
+
+        for (int i = 0; i < rowA; i++) 
+        {
+            for (int j = 0; j < colA; j++) 
+            {
+                matA[i][j] = sc.nextInt();
             }
         }
 
-        for(int i=0;i<maxThreads;i++)
+        System.out.println("Enter matrix B:");
+
+        for (int i = 0; i < rowB; i++) 
+        {
+            for (int j = 0; j < colB; j++) 
+            {
+                matB[i][j] = sc.nextInt();
+            }
+        }
+
+        long start = System.nanoTime();
+
+        for(int i=0;i<rowA;i++)
         {
             threadList.add(new Thread(runnable));
             threadList.get(i).start();
@@ -54,17 +95,17 @@ class matrixmult{
 
         long end = System.nanoTime();
 
-        try {
-            File primes = new File("primes.txt");
-            FileWriter writer = new FileWriter(primes);
-            writer.write(String.valueOf(end-start)+" "+String.valueOf(count)+" "+String.valueOf(primeSum)+"\n");
+        System.out.println("Reultant matrix:");
+        for (int r = 0; r < rowA; r++) 
+        {
+            for (int c = 0; c < colB; c++) 
+            {
+                System.out.print(matC[r][c]);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
 
-            //write ans
-
-            writer.close();
-          } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-          }
+        System.out.println("Executed in "+String.valueOf((end-start)/1000000)+" milliseconds");
     }
 }
