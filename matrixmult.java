@@ -17,19 +17,7 @@ class matrixmult{
     public static AtomicInteger row= new AtomicInteger(0);
 
     public static void main(String[] args) {
-        //implementation 1 as discussed in meeting
-        Runnable runnable = ()->{
-            int i = row.get(); //i denotes row number of resultant matC
-   
-            for (int j = 0; j < rowA; j++)
-                for (int k = 0; k < colB; k++)
-                    matC[i][j] += matA[i][k] * matB[k][j];
-
-            row.incrementAndGet();
-        };
-
         Scanner sc = new Scanner(System.in);
-        ArrayList<Thread> threadList = new ArrayList<Thread>();
 
         System.out.println("Dimensions of matrix A:");
         System.out.print("Row = ");
@@ -42,12 +30,6 @@ class matrixmult{
         rowB = sc.nextInt();
         System.out.print("Column = ");
         colB = sc.nextInt();
-
-        if(colA!=rowB)
-        {
-            System.out.println("Matrix multiplication not possible");
-            return;
-        }
 
         matA = new int[rowA][colA];
         matB = new int[rowB][colB];
@@ -73,6 +55,40 @@ class matrixmult{
             }
         }
 
+        System.out.println("\nEnter number for operation\n3: Multiply");
+
+        int choice = sc.nextInt();
+
+        if(choice==3)
+        {
+            if(colA!=rowB)
+            {
+                System.out.println("Matrix multiplication not possible");
+                sc.close();
+                return;
+            }
+
+            multiply(matA,matB,matC);
+        }
+
+        sc.close();
+    }
+
+    public static void multiply(int[][] matA, int[][] matB, int[][] matC)
+    {
+        //implementation 1 as discussed in meeting
+        Runnable runnable = ()->{
+            int i = row.get(); //i denotes row number of resultant matC
+    
+            for (int j = 0; j < rowA; j++)
+                for (int k = 0; k < colB; k++)
+                    matC[i][j] += matA[i][k] * matB[k][j];
+
+            row.incrementAndGet();
+        };
+
+        ArrayList<Thread> threadList = new ArrayList<Thread>();
+
         long start = System.nanoTime();
 
         for(int i=0;i<rowA;i++)
@@ -95,7 +111,7 @@ class matrixmult{
 
         long end = System.nanoTime();
 
-        System.out.println("Reultant matrix:");
+        System.out.println("\nResultant matrix:");
         for (int r = 0; r < rowA; r++) 
         {
             for (int c = 0; c < colB; c++) 
