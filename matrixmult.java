@@ -80,8 +80,8 @@ class matrixmult{
         Runnable runnable = ()->{
             int i = row.get(); //i denotes row number of resultant matC
     
-            for (int j = 0; j < rowA; j++)
-                for (int k = 0; k < colB; k++)
+            for (int j = 0; j < colB; j++)
+                for (int k = 0; k < rowB; k++)
                     matC[i][j] += matA[i][k] * matB[k][j];
 
             row.incrementAndGet();
