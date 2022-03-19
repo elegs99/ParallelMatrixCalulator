@@ -19,56 +19,66 @@ class matrixmult{
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Dimensions of matrix A:");
-        System.out.print("Row = ");
-        rowA = sc.nextInt();
-        System.out.print("Column = ");
-        colA = sc.nextInt();
-
-        System.out.println("Dimensions of matrix B:");
-        System.out.print("Row = ");
-        rowB = sc.nextInt();
-        System.out.print("Column = ");
-        colB = sc.nextInt();
-
-        matA = new int[rowA][colA];
-        matB = new int[rowB][colB];
-        matC = new int[rowA][colB];
-
-        System.out.println("Enter matrix A:");
-
-        for (int i = 0; i < rowA; i++) 
+        while(true)
         {
-            for (int j = 0; j < colA; j++) 
+            System.out.println("\nEnter number for operation\n3: Multiply\n5: Exit");
+
+            int choice = sc.nextInt();
+
+            if(choice!=5)
             {
-                matA[i][j] = sc.nextInt();
+                System.out.println("Dimensions of matrix A:");
+                System.out.print("Row = ");
+                rowA = sc.nextInt();
+                System.out.print("Column = ");
+                colA = sc.nextInt();
+
+                System.out.println("Dimensions of matrix B:");
+                System.out.print("Row = ");
+                rowB = sc.nextInt();
+                System.out.print("Column = ");
+                colB = sc.nextInt();
+
+                matA = new int[rowA][colA];
+                matB = new int[rowB][colB];
+                matC = new int[rowA][colB];
+
+                System.out.println("Enter matrix A:");
+
+                for (int i = 0; i < rowA; i++) 
+                {
+                    for (int j = 0; j < colA; j++) 
+                    {
+                        matA[i][j] = sc.nextInt();
+                    }
+                }
+
+                System.out.println("Enter matrix B:");
+
+                for (int i = 0; i < rowB; i++) 
+                {
+                    for (int j = 0; j < colB; j++) 
+                    {
+                        matB[i][j] = sc.nextInt();
+                    }
+                }
+
+                if(choice==3)
+                {
+                    if(colA!=rowB)
+                    {
+                        System.out.println("Matrix multiplication not possible");
+                        sc.close();
+                        return;
+                    }
+
+                    multiply(matA,matB,matC);
+                }
             }
-        }
-
-        System.out.println("Enter matrix B:");
-
-        for (int i = 0; i < rowB; i++) 
-        {
-            for (int j = 0; j < colB; j++) 
+            else
             {
-                matB[i][j] = sc.nextInt();
+                break;
             }
-        }
-
-        System.out.println("\nEnter number for operation\n3: Multiply");
-
-        int choice = sc.nextInt();
-
-        if(choice==3)
-        {
-            if(colA!=rowB)
-            {
-                System.out.println("Matrix multiplication not possible");
-                sc.close();
-                return;
-            }
-
-            multiply(matA,matB,matC);
         }
 
         sc.close();
