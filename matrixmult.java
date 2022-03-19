@@ -68,11 +68,11 @@ class matrixmult{
                     if(colA!=rowB)
                     {
                         System.out.println("Matrix multiplication not possible");
-                        sc.close();
-                        return;
                     }
-
-                    multiply(matA,matB,matC);
+                    else
+                    {
+                        multiply(matA,matB,matC);
+                    }
                 }
             }
             else
