@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.io.File;
@@ -20,7 +22,7 @@ class matrixmult {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
-            System.out.println("\nEnter number for operation\n3: Multiply\n5: Exit");
+            System.out.println("\nEnter number for operation\n1: Transposition\n3: Multiply\n5: Exit");
 
             int choice = sc.nextInt();
 
@@ -57,7 +59,11 @@ class matrixmult {
                     }
                 }
 
-                if (choice == 3) {
+                if (choice == 1) { // transposition
+                    ExecutorService threadPool = Executors.newFixedThreadPool(rowA);
+                }
+
+                else if (choice == 3) {
                     if (colA != rowB) {
                         System.out.println("Matrix multiplication not possible");
                     } else {
@@ -102,7 +108,11 @@ class matrixmult {
         }
 
         long end = System.nanoTime();
+        printMatrix();
+        System.out.println("Executed in " + String.valueOf((end - start) / 1000000) + " milliseconds");
+    }
 
+    public static void printMatrix() {
         System.out.println("\nResultant matrix:");
         for (int r = 0; r < rowA; r++) {
             for (int c = 0; c < colB; c++) {
@@ -111,8 +121,5 @@ class matrixmult {
             }
             System.out.println();
         }
-
-        System.out.println("Executed in " + String.valueOf((end - start) / 1000000) + " milliseconds");
     }
-
 }
