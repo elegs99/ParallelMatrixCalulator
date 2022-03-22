@@ -1,13 +1,13 @@
 public class matrixtranspose implements Runnable {
 
-    ThreadLocal<Integer> row = new ThreadLocal<Integer>();
+    ThreadLocal<Integer> tRow = new ThreadLocal<Integer>();
 
     @Override
     public void run() {
-        row.set(matrixmult.row.getAndIncrement()); // sets the threads row
+        tRow.set(matrixmult.row.getAndIncrement()); // sets the threads row
 
-        for (int j = 0; j < matrixmult.colB; j++) {
-            matrixmult.matC[j][row.get()] = matrixmult.matA[row.get()][j];
+        for (int i = 0; i < matrixmult.rowA; i++) {
+            matrixmult.matC[i][tRow.get()] = matrixmult.matA[tRow.get()][i];
         }
     }
 

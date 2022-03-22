@@ -15,7 +15,7 @@ class matrixmult {
     public static int colB;
     public static int[][] matA;
     public static int[][] matB;
-    public static int[][] matC;
+    public static int[][] matC; // used for storing results
     public static AtomicInteger row = new AtomicInteger(0);
 
     public static void main(String[] args) {
@@ -60,10 +60,28 @@ class matrixmult {
                 }
 
                 if (choice == 1) { // transposition
+                    // declares runnable and threadpool
+                    matrixtranspose transposition = new matrixtranspose();
                     ExecutorService threadPool = Executors.newFixedThreadPool(rowA);
+
+                    matC = new int[rowA][colA];
+
+                    long start = System.nanoTime();
+                    for (int i = 0; i < rowA; i++) { // submitting each thread to the pool
+                        threadPool.submit(transposition);
+                    }
+                    for (int i = 0; i < rowA; i++) { // shutdown threadpool
+                        threadPool.shutdown();
+                    }
+
+                    colB = colA;
+
+                    long end = System.nanoTime();
+                    printMatrix();
+                    System.out.println("Executed in " + String.valueOf((end - start) / 1000000) + " milliseconds");
                 }
 
-                else if (choice == 3) {
+                else if (choice == 3) { // multiplication
                     if (colA != rowB) {
                         System.out.println("Matrix multiplication not possible");
                     } else {
@@ -113,6 +131,8 @@ class matrixmult {
     }
 
     public static void printMatrix() {
+        // it's written assuming multiplication, just make sure to set your rows and
+        // columns as needed before calling
         System.out.println("\nResultant matrix:");
         for (int r = 0; r < rowA; r++) {
             for (int c = 0; c < colB; c++) {
