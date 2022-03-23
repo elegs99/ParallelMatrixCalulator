@@ -62,23 +62,14 @@ class matrixmult {
                 if (choice == 1) { // transposition
                     // declares runnable and threadpool
                     matrixtranspose transposition = new matrixtranspose();
-                    ExecutorService threadPool = Executors.newFixedThreadPool(rowA);
-
+                    ThreadPool threadPool = new ThreadPool(rowA);
                     matC = new int[rowA][colA];
 
-                    long start = System.nanoTime();
-                    for (int i = 0; i < rowA; i++) { // submitting each thread to the pool
-                        threadPool.submit(transposition);
-                    }
-                    for (int i = 0; i < rowA; i++) { // shutdown threadpool
-                        threadPool.shutdown();
-                    }
+                    threadPool.run(transposition);
 
                     colB = colA;
 
-                    long end = System.nanoTime();
-                    printMatrix();
-                    System.out.println("Executed in " + String.valueOf((end - start) / 1000000) + " milliseconds");
+                    // printMatrix();
                 }
 
                 else if (choice == 3) { // multiplication
