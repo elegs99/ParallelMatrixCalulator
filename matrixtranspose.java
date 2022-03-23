@@ -1,4 +1,4 @@
-public class matrixtranspose implements Runnable {
+public class MatrixTranspose implements Runnable {
 
     ThreadLocal<Integer> tRow = new ThreadLocal<Integer>();
 
