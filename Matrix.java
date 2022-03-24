@@ -1,3 +1,4 @@
+import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,13 +14,13 @@ class Matrix {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-
+        Random rand = new Random();
         while (true) {
             System.out.println("\nEnter number for operation\n1: Transposition\n3: Multiply\n5: Exit");
 
             int choice = sc.nextInt();
 
-            if (choice != 5) {
+            if (choice < 5 && choice > 0) {
                 System.out.println("Dimensions of matrix A:");
                 System.out.print("Row = ");
                 rowA = sc.nextInt();
@@ -36,19 +37,21 @@ class Matrix {
                 matB = new int[rowB][colB];
                 matC = new int[rowA][colB];
 
-                System.out.println("Enter matrix A:");
+                // System.out.println("Enter matrix A:");
 
                 for (int i = 0; i < rowA; i++) {
                     for (int j = 0; j < colA; j++) {
-                        matA[i][j] = sc.nextInt();
+                        // matA[i][j] = sc.nextInt();
+                        matA[i][j] = rand.nextInt(100);
                     }
                 }
 
-                System.out.println("Enter matrix B:");
+                // System.out.println("Enter matrix B:");
 
                 for (int i = 0; i < rowB; i++) {
                     for (int j = 0; j < colB; j++) {
-                        matB[i][j] = sc.nextInt();
+                        // matB[i][j] = sc.nextInt();
+                        matB[i][j] = rand.nextInt(100);
                     }
                 }
 
@@ -84,7 +87,11 @@ class Matrix {
         ThreadPool threadPool = new ThreadPool(rowA);
         MatrixMultiply runnable = new MatrixMultiply();
         threadPool.run(runnable);
-        printMatrix();
+
+        SeqMatrixMultiply seqMM = new SeqMatrixMultiply();
+        Thread t = new Thread(seqMM);
+        t.start();
+        // printMatrix();
     }
 
     public static void printMatrix() {
