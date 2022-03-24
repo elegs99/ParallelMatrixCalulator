@@ -62,8 +62,11 @@ class Matrix {
                     matC = new int[rowA][colA];
 
                     threadPool.run(transposition);
-
                     colB = colA;
+
+                    SeqMatrixTranspose seqT = new SeqMatrixTranspose();
+                    Thread t = new Thread(seqT);
+                    t.start();
 
                     // printMatrix();
                 }
