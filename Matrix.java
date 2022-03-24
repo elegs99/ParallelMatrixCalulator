@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -82,37 +81,10 @@ class Matrix {
     }
 
     public static void multiply(int[][] matA, int[][] matB, int[][] matC) {
-        // implementation 1 as discussed in meeting
-        Runnable runnable = () -> {
-            int i = row.get(); // i denotes row number of resultant matC
-
-            for (int j = 0; j < colB; j++)
-                for (int k = 0; k < rowB; k++)
-                    matC[i][j] += matA[i][k] * matB[k][j];
-
-            row.incrementAndGet();
-        };
-
-        ArrayList<Thread> threadList = new ArrayList<Thread>();
-
-        long start = System.nanoTime();
-
-        for (int i = 0; i < rowA; i++) {
-            threadList.add(new Thread(runnable));
-            threadList.get(i).start();
-        }
-
-        for (Thread t : threadList) {
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                return;
-            }
-        }
-
-        long end = System.nanoTime();
+        ThreadPool threadPool = new ThreadPool(rowA);
+        MatrixMultiply runnable = new MatrixMultiply();
+        threadPool.run(runnable);
         printMatrix();
-        System.out.println("Executed in " + String.valueOf((end - start) / 1000000) + " milliseconds");
     }
 
     public static void printMatrix() {
