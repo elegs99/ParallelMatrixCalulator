@@ -6,6 +6,7 @@ HOW TO COMPILE:
 
 Open a terminal in directory containing files
 
+<br>
 
 To run main matrix calculator program, type:
 
@@ -15,7 +16,7 @@ java Matrix
 
 The terminal will then prompt the user for input through the command line.
 
-
+<br>
 
 To see demo of GUI, type:
 
