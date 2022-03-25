@@ -1,14 +1,8 @@
-import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
-class matrixmult {
+class Matrix {
     public static int rowA;
     public static int colA;
     public static int rowB;
@@ -20,13 +14,13 @@ class matrixmult {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-
+        Random rand = new Random();
         while (true) {
             System.out.println("\nEnter number for operation\n1: Transposition\n3: Multiply\n5: Exit");
 
             int choice = sc.nextInt();
 
-            if (choice != 5) {
+            if (choice < 5 && choice > 0) {
                 System.out.println("Dimensions of matrix A:");
                 System.out.print("Row = ");
                 rowA = sc.nextInt();
@@ -43,42 +37,38 @@ class matrixmult {
                 matB = new int[rowB][colB];
                 matC = new int[rowA][colB];
 
-                System.out.println("Enter matrix A:");
+                // System.out.println("Enter matrix A:");
 
                 for (int i = 0; i < rowA; i++) {
                     for (int j = 0; j < colA; j++) {
-                        matA[i][j] = sc.nextInt();
+                        // matA[i][j] = sc.nextInt();
+                        matA[i][j] = rand.nextInt(100);
                     }
                 }
 
-                System.out.println("Enter matrix B:");
+                // System.out.println("Enter matrix B:");
 
                 for (int i = 0; i < rowB; i++) {
                     for (int j = 0; j < colB; j++) {
-                        matB[i][j] = sc.nextInt();
+                        // matB[i][j] = sc.nextInt();
+                        matB[i][j] = rand.nextInt(100);
                     }
                 }
 
                 if (choice == 1) { // transposition
                     // declares runnable and threadpool
-                    matrixtranspose transposition = new matrixtranspose();
-                    ExecutorService threadPool = Executors.newFixedThreadPool(rowA);
-
+                    MatrixTranspose transposition = new MatrixTranspose();
+                    ThreadPool threadPool = new ThreadPool(rowA);
                     matC = new int[rowA][colA];
 
-                    long start = System.nanoTime();
-                    for (int i = 0; i < rowA; i++) { // submitting each thread to the pool
-                        threadPool.submit(transposition);
-                    }
-                    for (int i = 0; i < rowA; i++) { // shutdown threadpool
-                        threadPool.shutdown();
-                    }
-
+                    threadPool.run(transposition);
                     colB = colA;
 
-                    long end = System.nanoTime();
-                    printMatrix();
-                    System.out.println("Executed in " + String.valueOf((end - start) / 1000000) + " milliseconds");
+                    SeqMatrixTranspose seqT = new SeqMatrixTranspose();
+                    Thread t = new Thread(seqT);
+                    t.start();
+
+                    // printMatrix();
                 }
 
                 else if (choice == 3) { // multiplication
@@ -97,37 +87,14 @@ class matrixmult {
     }
 
     public static void multiply(int[][] matA, int[][] matB, int[][] matC) {
-        // implementation 1 as discussed in meeting
-        Runnable runnable = () -> {
-            int i = row.get(); // i denotes row number of resultant matC
+        ThreadPool threadPool = new ThreadPool(rowA);
+        MatrixMultiply runnable = new MatrixMultiply();
+        threadPool.run(runnable);
 
-            for (int j = 0; j < colB; j++)
-                for (int k = 0; k < rowB; k++)
-                    matC[i][j] += matA[i][k] * matB[k][j];
-
-            row.incrementAndGet();
-        };
-
-        ArrayList<Thread> threadList = new ArrayList<Thread>();
-
-        long start = System.nanoTime();
-
-        for (int i = 0; i < rowA; i++) {
-            threadList.add(new Thread(runnable));
-            threadList.get(i).start();
-        }
-
-        for (Thread t : threadList) {
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                return;
-            }
-        }
-
-        long end = System.nanoTime();
-        printMatrix();
-        System.out.println("Executed in " + String.valueOf((end - start) / 1000000) + " milliseconds");
+        SeqMatrixMultiply seqMM = new SeqMatrixMultiply();
+        Thread t = new Thread(seqMM);
+        t.start();
+        // printMatrix();
     }
 
     public static void printMatrix() {
