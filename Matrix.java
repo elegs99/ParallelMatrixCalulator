@@ -16,7 +16,7 @@ class Matrix {
         Scanner sc = new Scanner(System.in);
         Random rand = new Random();
         while (true) {
-            System.out.println("\nEnter number for operation\n1: Transposition\n3: Multiply\n5: Exit");
+            System.out.println("\nEnter number for operation\n1: Transposition\n2: Multiply\n3: Add\n4: Subtract\n5: Exit");
 
             int choice = sc.nextInt();
 
@@ -71,11 +71,22 @@ class Matrix {
                     // printMatrix();
                 }
 
-                else if (choice == 3) { // multiplication
+                else if (choice == 2) { // multiplication
                     if (colA != rowB) {
                         System.out.println("Matrix multiplication not possible");
                     } else {
                         multiply(matA, matB, matC);
+                    }
+                }
+
+                else if (choice == 3) { // add
+                    if (rowA != rowB || colA != colB) {
+                        System.out.println("Matrix multiplication not possible");
+                    } else {
+                        MatrixAdd add = new MatrixAdd();
+                        ThreadPool threadPool = new ThreadPool(rowA);
+                        matC = new int[rowA][colA];
+                        threadPool.run(add);
                     }
                 }
             } else {
