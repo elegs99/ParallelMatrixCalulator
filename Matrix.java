@@ -41,8 +41,8 @@ class Matrix {
 
                 for (int i = 0; i < rowA; i++) {
                     for (int j = 0; j < colA; j++) {
-                        // matA[i][j] = sc.nextInt();
-                        matA[i][j] = rand.nextInt(100);
+                        matA[i][j] = sc.nextInt();
+                        // matA[i][j] = rand.nextInt(100);
                     }
                 }
 
@@ -50,8 +50,8 @@ class Matrix {
 
                 for (int i = 0; i < rowB; i++) {
                     for (int j = 0; j < colB; j++) {
-                        // matB[i][j] = sc.nextInt();
-                        matB[i][j] = rand.nextInt(100);
+                        matB[i][j] = sc.nextInt();
+                        // matB[i][j] = rand.nextInt(100);
                     }
                 }
 
@@ -81,12 +81,16 @@ class Matrix {
 
                 else if (choice == 3) { // add
                     if (rowA != rowB || colA != colB) {
-                        System.out.println("Matrix multiplication not possible");
+                        System.out.println("Matrix addition not possible. Dimensions do not match");
                     } else {
                         MatrixAdd add = new MatrixAdd();
                         ThreadPool threadPool = new ThreadPool(rowA);
                         matC = new int[rowA][colA];
                         threadPool.run(add);
+                        printMatrix();
+                        SeqMatrixAdd seqMA = new SeqMatrixAdd();
+                        Thread t = new Thread(seqMA);
+                        t.start();
                     }
                 }
             } else {
