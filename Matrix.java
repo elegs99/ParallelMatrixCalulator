@@ -93,6 +93,21 @@ class Matrix {
                         t.start();
                     }
                 }
+
+                else if (choice == 4) { // subtract
+                    if (rowA != rowB || colA != colB) {
+                        System.out.println("Matrix subtraction not possible. Dimensions do not match");
+                    } else {
+                        MatrixSubtract sub = new MatrixSubtract();
+                        ThreadPool threadPool = new ThreadPool(rowA);
+                        matC = new int[rowA][colA];
+                        threadPool.run(sub);
+                        printMatrix();
+                        SeqMatrixSubtract seqMS = new SeqMatrixSubtract();
+                        Thread t = new Thread(seqMS);
+                        t.start();
+                    }
+                }
             } else {
                 break;
             }
