@@ -41,8 +41,8 @@ class Matrix {
 
                 for (int i = 0; i < rowA; i++) {
                     for (int j = 0; j < colA; j++) {
-                        matA[i][j] = sc.nextInt();
-                        // matA[i][j] = rand.nextInt(100);
+                        // matA[i][j] = sc.nextInt();
+                        matA[i][j] = rand.nextInt(100);
                     }
                 }
 
@@ -50,8 +50,8 @@ class Matrix {
 
                 for (int i = 0; i < rowB; i++) {
                     for (int j = 0; j < colB; j++) {
-                        matB[i][j] = sc.nextInt();
-                        // matB[i][j] = rand.nextInt(100);
+                        // matB[i][j] = sc.nextInt();
+                        matB[i][j] = rand.nextInt(100);
                     }
                 }
 
