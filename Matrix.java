@@ -10,6 +10,7 @@ class Matrix {
     public static int[][] matA;
     public static int[][] matB;
     public static int[][] matC; // used for storing results
+    public static int[][] matS; // used for storing results of seqeuntial operations
     public static AtomicInteger row = new AtomicInteger(0);
 
     public static void main(String[] args) {
@@ -60,6 +61,7 @@ class Matrix {
                     MatrixTranspose transposition = new MatrixTranspose();
                     ThreadPool threadPool = new ThreadPool(rowA);
                     matC = new int[rowA][colA];
+                    matS = new int[rowA][colA];
 
                     threadPool.run(transposition);
                     colB = colA;
@@ -67,8 +69,6 @@ class Matrix {
                     SeqMatrixTranspose seqT = new SeqMatrixTranspose();
                     Thread t = new Thread(seqT);
                     t.start();
-
-                    // printMatrix();
                 }
 
                 else if (choice == 3) { // multiplication

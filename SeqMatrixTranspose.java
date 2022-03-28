@@ -6,7 +6,7 @@ public class SeqMatrixTranspose implements Runnable {
 
         for (int i = 0; i < Matrix.rowA; i++) {
             for (int j = 0; j < Matrix.colA; j++) {
-                Matrix.matC[j][i] = Matrix.matA[i][j];
+                Matrix.matS[j][i] = Matrix.matA[i][j];
             }
         }
 
