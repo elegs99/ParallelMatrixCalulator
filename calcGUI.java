@@ -7,18 +7,12 @@ public class calcGUI implements ActionListener
 	//class constants
 	private static final int WINDOW_WIDTH = 800;//pixels
 	private static final int WINDOW_HEIGHT = 800;//pixels
-	private static final int FIELD_WIDTH = 20;//characters
-	private static final int AREA_WIDTH = 40;//characters
 
 	private static final GridBagLayout LAYOUT_STYLE =  new GridBagLayout(); //This sets the frame layout
 	GridBagConstraints gc = new GridBagConstraints();
-	private static final String LEGEND = " This calculator is intended to calculate linear operations between two matricies.";
 
 	//instance variables
 	private JFrame window = new JFrame("Matrix Calculator");
-
-	//legend.
-	private JTextArea legendArea = new JTextArea(LEGEND, 2, AREA_WIDTH); //distance between the provided text and the input fields
 
 	private JLabel ATag = new JLabel("Matrix A");
 	private JLabel BTag = new JLabel("Matrix B");
@@ -56,13 +50,22 @@ public class calcGUI implements ActionListener
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ResultText.setEditable(false);
 
-		legendArea.setEditable(false); //Allows user to edit the legend above...probably want this off at most times
-		legendArea.setLineWrap(true); //Allows lines to move to the next line if they don't fit the width.
-		legendArea.setWrapStyleWord(true);
-		legendArea.setBackground(window.getBackground()); //background of legend
+		MButton.setEnabled(false);
+		MButton.setBackground(new Color(153,0,0));
+		AButton.setBackground(Color.LIGHT_GRAY);
 
-		//Drivers.setBounds(80, 50, 140, 20);
-		//URLs.setBounds(80, 50, 140, 20);
+		ATag.setForeground(Color.red);
+		BTag.setForeground(Color.red);
+		RTag.setForeground(Color.red);
+		OTag.setForeground(Color.red);
+		operations.setBackground(Color.green);
+		opDropBox.setBackground(Color.DARK_GRAY);
+		Input.setBackground(Color.DARK_GRAY);
+		result.setBackground(Color.DARK_GRAY);
+		clr.setBackground(Color.DARK_GRAY);
+		calcButton.setBackground(Color.LIGHT_GRAY);
+		clrABButton.setBackground(Color.LIGHT_GRAY);
+		clrResButton.setBackground(Color.LIGHT_GRAY);
 	}
 
 	private void setup2(Container c)
@@ -143,7 +146,6 @@ public class calcGUI implements ActionListener
 		gc.gridy = 2;
 		gc.ipady = 50;
 		c.add(clr, gc);
-
 	}
 
 	//MatrixGUI(): constructor
@@ -157,6 +159,46 @@ public class calcGUI implements ActionListener
 		c.setLayout(LAYOUT_STYLE);
 		setup2(c);
 
+		AButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent a)
+			{
+				AButton.setEnabled(false);
+				MButton.setEnabled(true);
+				AButton.setBackground(new Color(153,0,0));
+				MButton.setBackground(Color.LIGHT_GRAY);
+			}
+		});
+
+		MButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent a)
+			{
+				AButton.setEnabled(true);
+				MButton.setEnabled(false);
+				MButton.setBackground(new Color(153,0,0));
+				AButton.setBackground(Color.LIGHT_GRAY);
+			}
+		});
+
+		clrABButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent a)
+			{
+				AText.setText("");
+				BText.setText("");
+			}
+		});
+
+		clrResButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent a)
+			{
+				ResultText.setText("");
+			}
+		});
+
+		c.setBackground(Color.DARK_GRAY);
 		//display GUI
 		window.setVisible(true);
 	}
