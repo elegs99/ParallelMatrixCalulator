@@ -25,6 +25,11 @@ public class ThreadPool {
             threadPool.shutdown();
         }
 
+        while (true) {
+            if (threadPool.isShutdown()) {
+                break;
+            }
+        }
         long end = System.nanoTime();
         System.out.println("Executed in " + String.valueOf((end - start) / 1000000) + " milliseconds");
     }
