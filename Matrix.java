@@ -7,6 +7,7 @@ class Matrix {
     public static int colA;
     public static int rowB;
     public static int colB;
+    public static int blockSize;
     public static int[][] matA;
     public static int[][] matB;
     public static int[][] matC; // used for storing results
@@ -58,8 +59,11 @@ class Matrix {
 
                 if (choice == 1) { // transposition
                     // declares runnable and threadpool
+                    int nThreads = 1; // variable # of threads
+                    blockSize = colA / nThreads; // declares size of submatrix
+
                     MatrixTranspose transposition = new MatrixTranspose();
-                    ThreadPool threadPool = new ThreadPool(rowA);
+                    ThreadPool threadPool = new ThreadPool(nThreads);
                     matC = new int[rowA][colA];
                     matS = new int[rowA][colA];
 
@@ -69,6 +73,7 @@ class Matrix {
                     SeqMatrixTranspose seqT = new SeqMatrixTranspose();
                     Thread t = new Thread(seqT);
                     t.start();
+
                 }
 
                 else if (choice == 3) { // multiplication
@@ -104,6 +109,15 @@ class Matrix {
         for (int r = 0; r < rowA; r++) {
             for (int c = 0; c < colB; c++) {
                 System.out.print(matC[r][c]);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+
+        System.out.println("\noriginal matrix:");
+        for (int r = 0; r < rowA; r++) {
+            for (int c = 0; c < colB; c++) {
+                System.out.print(matA[r][c]);
                 System.out.print(" ");
             }
             System.out.println();
