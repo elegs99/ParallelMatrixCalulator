@@ -1,5 +1,6 @@
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 // HOW TO USE???
 // ThreadPool <var_name> = new ThreadPool(rowA/colB) (just use the value that correlates to number of threads)
@@ -25,11 +26,13 @@ public class ThreadPool {
             threadPool.shutdown();
         }
 
-        while (true) {
-            if (threadPool.isShutdown()) {
-                break;
-            }
+        try {
+            threadPool.awaitTermination(2, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
+
         long end = System.nanoTime();
         System.out.println("Executed in " + String.valueOf((end - start) / 1000000) + " milliseconds");
     }
