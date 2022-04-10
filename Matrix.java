@@ -18,7 +18,8 @@ class Matrix {
         Scanner sc = new Scanner(System.in);
         Random rand = new Random();
         while (true) {
-            System.out.println("\nEnter number for operation\n1: Transposition\n2: Multiply\n3: Add\n4: Subtract\n5: Exit");
+            System.out.println(
+                    "\nEnter number for operation\n1: Transposition\n2: Multiply\n3: Add\n4: Subtract\n5: Exit");
 
             int choice = sc.nextInt();
 
@@ -152,5 +153,50 @@ class Matrix {
             }
             System.out.println();
         }
+    }
+
+    public static int[][] parseMat(String input) {
+        char c;
+        int row = 0, col = 0, j = 0;
+        int countRow = 0, countCol = 0; // used to count rows and columns
+        int[] arr = new int[input.length()];
+
+        for (int i = 0; i < input.length(); i++) // let's parse
+        {
+            c = input.charAt(i);
+            if (c == '[' && countRow == 0) { // 1st character
+                countRow++;
+
+            } else if (c == '[' && countRow == 1) { // 2nd and other start row matrix character
+                countRow++;
+                row++;
+
+            } else if (c == ' ' || c == ',') { // we don't want these
+                ;
+
+            } else if (((int) c) >= 48 && ((int) c) <= 57) {
+                arr[j] = ((int) c) - 48; // ASCII, everyone's favorite
+                countCol++; // each number is a new length of columns
+                j++;
+
+            } else if (c == ']' && countRow == 2) {
+                countRow--;
+                col = countCol;
+                countCol = 0;
+
+            }
+        }
+
+        int[][] retval = new int[row][col];
+        int z = 0;
+        for (int i = 0; i < row; i++) {
+            for (int k = 0; k < col; k++) {
+                retval[i][k] = arr[z];
+                z++; // used to go thru original array.
+            }
+        }
+
+        return retval;
+
     }
 }
