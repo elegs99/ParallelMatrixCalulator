@@ -46,23 +46,26 @@ public class calcGUI implements ActionListener
 	//configure GUI
 	private void setup1()
 	{
+		Color DarkBlueBG = new Color(44, 51, 58);
+		Color OliveText = new Color(96, 158, 71);
+		Color GoldInteractable = new Color(255, 181, 32);
 		window.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ResultText.setEditable(false);
 
 		MButton.setEnabled(false);
-		MButton.setBackground(new Color(153,0,0));
+		MButton.setBackground(GoldInteractable);
 		AButton.setBackground(Color.LIGHT_GRAY);
 
-		ATag.setForeground(Color.red);
-		BTag.setForeground(Color.red);
-		RTag.setForeground(Color.red);
-		OTag.setForeground(Color.red);
-		operations.setBackground(Color.green);
-		opDropBox.setBackground(Color.DARK_GRAY);
-		Input.setBackground(Color.DARK_GRAY);
-		result.setBackground(Color.DARK_GRAY);
-		clr.setBackground(Color.DARK_GRAY);
+		ATag.setForeground(OliveText);
+		BTag.setForeground(OliveText);
+		RTag.setForeground(OliveText);
+		OTag.setForeground(OliveText);
+		operations.setBackground(Color.LIGHT_GRAY);
+		opDropBox.setBackground(DarkBlueBG);
+		Input.setBackground(DarkBlueBG);
+		result.setBackground(DarkBlueBG);
+		clr.setBackground(DarkBlueBG);
 		calcButton.setBackground(Color.LIGHT_GRAY);
 		clrABButton.setBackground(Color.LIGHT_GRAY);
 		clrResButton.setBackground(Color.LIGHT_GRAY);
@@ -151,6 +154,8 @@ public class calcGUI implements ActionListener
 	//MatrixGUI(): constructor
 	public calcGUI()
 	{
+		Color DarkBlueBG = new Color(44, 51, 58);
+		Color GoldInteractable = new Color(255, 181, 32);
 		//configure GUI
 		setup1();
 
@@ -165,7 +170,7 @@ public class calcGUI implements ActionListener
 			{
 				AButton.setEnabled(false);
 				MButton.setEnabled(true);
-				AButton.setBackground(new Color(153,0,0));
+				AButton.setBackground(GoldInteractable);
 				MButton.setBackground(Color.LIGHT_GRAY);
 			}
 		});
@@ -176,7 +181,7 @@ public class calcGUI implements ActionListener
 			{
 				AButton.setEnabled(true);
 				MButton.setEnabled(false);
-				MButton.setBackground(new Color(153,0,0));
+				MButton.setBackground(GoldInteractable);
 				AButton.setBackground(Color.LIGHT_GRAY);
 			}
 		});
@@ -198,7 +203,8 @@ public class calcGUI implements ActionListener
 			}
 		});
 
-		c.setBackground(Color.DARK_GRAY);
+		c.setBackground(DarkBlueBG);
+		c.setForeground(DarkBlueBG);
 		//display GUI
 		window.setVisible(true);
 	}
