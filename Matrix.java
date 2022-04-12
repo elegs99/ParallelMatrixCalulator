@@ -19,11 +19,11 @@ class Matrix {
         Random rand = new Random();
         while (true) {
             System.out.println(
-                    "\nEnter number for operation\n1: Transposition\n2: Multiply\n3: Add\n4: Subtract\n5: Exit");
+                    "\nEnter number for operation\n1: Transposition\n2: Multiply\n3: Add\n4: Subtract\n5: Scalar Multiplication\n6: Exit");
 
             int choice = sc.nextInt();
 
-            if (choice < 5 && choice > 0) {
+            if (choice < 6 && choice > 0) {
                 System.out.println("Dimensions of matrix A:");
                 System.out.print("Row = ");
                 rowA = sc.nextInt();
@@ -74,7 +74,11 @@ class Matrix {
                     SeqMatrixTranspose seqT = new SeqMatrixTranspose();
                     Thread t = new Thread(seqT);
                     t.start();
-
+                    try {
+                        t.join();
+                    } catch (Exception e) {
+                        //TODO: handle exception
+                    }
                 }
 
                 else if (choice == 2) { // multiplication
@@ -112,6 +116,29 @@ class Matrix {
                         SeqMatrixSubtract seqMS = new SeqMatrixSubtract();
                         Thread t = new Thread(seqMS);
                         t.start();
+                    }
+                }
+                else if (choice == 5){ // scalar multiplication
+                    int nThreads = 1; // variable # of threads
+                    blockSize = colA / nThreads; // declares size of submatrix
+                    int scalar;
+                    matC = new int[rowA][colA];
+                    matS = new int[rowA][colA];
+                    System.out.print("Enter a scalar: ");
+                    scalar = sc.nextInt();
+                    
+                    ScalarMultiply scalarMultiplication = new ScalarMultiply(scalar);
+                    SeqScalarMultiply seqT = new SeqScalarMultiply(scalar);
+                    ThreadPool threadPool = new ThreadPool(nThreads);
+                
+                    threadPool.run(scalarMultiplication);
+                
+                    Thread t = new Thread(seqT);
+                    t.start();
+                    try {
+                        t.join();
+                    } catch (Exception e) {
+                        //TODO: handle exception
                     }
                 }
             } else {
