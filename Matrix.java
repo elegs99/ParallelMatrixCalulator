@@ -159,11 +159,17 @@ class Matrix {
         char c;
         int row = 0, col = 0, j = 0;
         int countRow = 0, countCol = 0; // used to count rows and columns
+        int colPrev = 0; // used for size comparison
+        boolean first = true;
         int[] arr = new int[input.length()];
 
         for (int i = 0; i < input.length(); i++) // let's parse
         {
             c = input.charAt(i);
+            if (first) { // first row, needed for counting columns
+                colPrev = countCol;
+            }
+
             if (c == '[' && countRow == 0) { // 1st character
                 countRow++;
 
@@ -182,8 +188,14 @@ class Matrix {
             } else if (c == ']' && countRow == 2) {
                 countRow--;
                 col = countCol;
-                countCol = 0;
 
+                if (colPrev != countCol) { // uh oh! bad size matrix
+                    return null;
+                } else {
+                    colPrev = countCol;
+                }
+                countCol = 0;
+                first = false;
             }
         }
 
