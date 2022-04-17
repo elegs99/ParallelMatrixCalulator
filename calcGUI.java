@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class calcGUI extends JFrame
 {
@@ -28,6 +29,7 @@ public class calcGUI extends JFrame
 	private JButton calcButton = new JButton("Calculate");
 	private JButton clrResButton = new JButton("Clear Results");
 	private JButton clrABButton = new JButton("Clear Matricies");
+	private JButton AutoResetButton = new JButton("Generate New Matrices");
 
 	private JPanel Mode = new JPanel(new GridBagLayout());
 	private JPanel m1 = new JPanel(new GridBagLayout());
@@ -37,12 +39,13 @@ public class calcGUI extends JFrame
 	private JPanel result = new JPanel(new GridBagLayout());
 	private JPanel clr = new JPanel(new FlowLayout());
 
-
-	private String[] Opts = {"Addition", "Subtraction", "Multiply","Transpose"};
+	private String[] Opts = {"Matrix to Matrix Addition", "Matrix to Matrix Subtraction",
+							"Matrix to Matrix Multiplication","Transpose",
+							"Matrix to Scalar Multiplication"};
 	private JComboBox<String> operations = new JComboBox<>(Opts);
 
 	// These labels are simply to aid in styling purposes
-	private JLabel blank = new JLabel("_________________");
+	private JLabel blank = new JLabel("__________");
 	private JLabel blank1 = new JLabel(" ");
 	private JLabel blank2 = new JLabel(" ");
 	private JLabel blank3 = new JLabel(" ");
@@ -53,6 +56,88 @@ public class calcGUI extends JFrame
 	Color OliveText = new Color(96, 158, 71);
 	Color GoldInteractable = new Color(255, 181, 32);
 
+	public static int answer[][];
+	public static int matA[][];
+	public static int matB[][];
+
+	private static StringBuilder a;
+	private static StringBuilder b;
+	private static StringBuilder r;
+
+	public static int rowA = 0;
+	public static int colA = 0;
+	public static int rowB = 0;
+	public static int colB = 0;
+
+	public static int blockSize;
+	public static AtomicInteger row = new AtomicInteger(0);
+
+	private static boolean isAuto = true;
+
+	// Populate the text areas with randomly generated compatible matrices
+	private void generateAuto()
+	{
+		rowA = 5;
+		colA = 5;
+		rowB = 5;
+		colB = 5;
+		matA = new int[rowA][colA];
+		matB = new int[rowB][colB];
+		a = new StringBuilder();
+		b = new StringBuilder();
+
+		for(int i = 0; i < rowA; i++)
+		{
+			for(int j = 0; j < colA; j++)
+			{
+				matA[i][j] = (int) (Math.random() * 10);
+			}
+		}
+		for(int i = 0; i < rowB; i++)
+		{
+			for(int j = 0; j < colB; j++)
+			{
+				matB[i][j] = (int) (Math.random() * 10);
+			}
+		}
+
+		genString(a,rowA,colA,matA);
+		AText.setText(a.toString());
+
+		genString(b,rowB,colB,matB);
+		BText.setText(b.toString());
+	}
+
+	// Generate matrices into string format for textAreas
+	private void genString(StringBuilder ex, int row, int col, int[][] mat)
+	{
+		ex.append("[");
+		for(int i = 0; i < row; i++)
+		{
+			ex.append("[ ");
+			for(int j = 0; j < col; j++)
+			{
+				if(j == col - 1)
+				{
+					ex.append(mat[i][j]);
+				}
+				else
+				{
+					ex.append(mat[i][j] +", ");
+				}
+			}
+			if(i == row - 1)
+			{
+				ex.append("]");
+			}
+			else
+			{
+				ex.append("],\n");
+			}
+		}
+		ex.append("]");
+	}
+
 	//configure GUI
 	private void setup1()
 	{
@@ -60,9 +145,11 @@ public class calcGUI extends JFrame
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ResultText.setEditable(false);
 
-		MButton.setEnabled(false);
-		MButton.setBackground(GoldInteractable);
-		AButton.setBackground(Color.LIGHT_GRAY);
+		AButton.setEnabled(false);
+		clrABButton.setEnabled(false);
+		AButton.setBackground(GoldInteractable);
+		MButton.setBackground(Color.LIGHT_GRAY);
+		AutoResetButton.setBackground(Color.LIGHT_GRAY);
 
 		ATag.setForeground(OliveText);
 		BTag.setForeground(OliveText);
@@ -90,7 +177,7 @@ public class calcGUI extends JFrame
 		opDropBox.add(OTag);
 		opDropBox.add(operations);
 
-		clr.add(blank4);
+		clr.add(AutoResetButton);
 		clr.add(clrABButton);
 		clr.add(clrResButton);
 
@@ -208,6 +295,10 @@ public class calcGUI extends JFrame
 				MButton.setEnabled(true);
 				AButton.setBackground(GoldInteractable);
 				MButton.setBackground(Color.LIGHT_GRAY);
+				isAuto = true;
+				clrABButton.setEnabled(false);
+				generateAuto();
+				AutoResetButton.setEnabled(true);
 			}
 		});
 
@@ -220,6 +311,9 @@ public class calcGUI extends JFrame
 				MButton.setEnabled(false);
 				MButton.setBackground(GoldInteractable);
 				AButton.setBackground(Color.LIGHT_GRAY);
+				isAuto = false;
+				clrABButton.setEnabled(true);
+				AutoResetButton.setEnabled(false);
 			}
 		});
 
@@ -240,15 +334,189 @@ public class calcGUI extends JFrame
 			}
 		});
 
+		calcButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent a)
+			{
+				int nThreads = 1;
+				int scalar = 0;
+				ThreadPool threadPool;
+				blockSize = colA / nThreads;
+			    String s = (String) operations.getSelectedItem();
+			    if(isAuto == true)
+			    {
+					switch(s)
+					{
+						case "Matrix to Matrix Addition":
+							if (rowA != rowB || colA != colB) {
+		                        System.out.println("Matrix addition not possible. Dimensions do not match");
+		                    } else {
+		                        MatrixAdd add = new MatrixAdd();
+		                        threadPool = new ThreadPool(rowA);
+		                        answer = new int[rowA][colA];
+		                        r = new StringBuilder();
+		                        threadPool.run(add);
+		                        genString(r,rowA,colA,answer);
+		                        ResultText.setText(r.toString());
+		                        row.set(0);
+		                        threadPool = null;
+		                    }
+							break;
+						case "Matrix to Matrix Subtraction":
+							if (rowA != rowB || colA != colB) {
+		                        System.out.println("Matrix subtraction not possible. Dimensions do not match");
+		                    }
+							else
+							{
+		                        MatrixSubtract sub = new MatrixSubtract();
+		                        threadPool = new ThreadPool(rowA);
+		                        answer = new int[rowA][colA];
+		                        r = new StringBuilder();
+		                        threadPool.run(sub);
+		                        genString(r,rowA,colA,answer);
+		                        row.set(0);
+		                        threadPool = null;
+		                        ResultText.setText(r.toString());
+		                    }
+							break;
+						case "Transpose":
+							MatrixTranspose transposition = new MatrixTranspose();
+		                    threadPool = new ThreadPool(nThreads);
+		                    answer = new int[colA][rowA];
+		                    r = new StringBuilder();
+		                    threadPool.run(transposition);
+		                    genString(r,colA,rowA,answer);
+		                    ResultText.setText(r.toString());
+		                    row.set(0);
+		                    threadPool = null;
+		                    break;
+						case "Matrix to Matrix Multiplication":
+							if (colA != rowB)
+							{
+		                        ResultText.setText("Matrix multiplication not possible");
+		                    }
+							else
+							{
+								threadPool = new ThreadPool(rowA);
+								r = new StringBuilder();
+								answer = new int[rowA][colB];
+						        MatrixMultiply runnable = new MatrixMultiply();
+						        threadPool.run(runnable);
+						        genString(r,rowA,colB,answer);
+			                    ResultText.setText(r.toString());
+			                    row.set(0);
+			                    threadPool = null;
+		                    }
+							break;
+						case "Matrix to Scalar Multiplication":
+							scalar = Integer.parseInt(BText.getText());
+							ScalarMultiply scalarMultiplication = new ScalarMultiply(scalar);
+							r = new StringBuilder();
+							answer = new int[rowA][colB];
+		                    threadPool = new ThreadPool(nThreads);
+		                    threadPool.run(scalarMultiplication);
+		                    genString(r,rowA,colB,answer);
+		                    ResultText.setText(r.toString());
+		                    row.set(0);
+		                    threadPool = null;
+							break;
+					}
+			    }
+
+			    else
+				{
+			    	switch(s)
+					{
+						case "Matrix to Matrix Addition":
+							if (rowA != rowB || colA != colB) {
+		                        System.out.println("Matrix addition not possible. Dimensions do not match");
+		                    } else {
+		                        MatrixAdd add = new MatrixAdd();
+		                        threadPool = new ThreadPool(rowA);
+		                        answer = new int[rowA][colA];
+		                        r = new StringBuilder();
+		                        threadPool.run(add);
+		                        genString(r,rowA,colA,answer);
+		                        ResultText.setText(r.toString());
+		                        row.set(0);
+		                        threadPool = null;
+		                    }
+							break;
+						case "Matrix to Matrix Subtraction":
+							if (rowA != rowB || colA != colB) {
+		                        System.out.println("Matrix subtraction not possible. Dimensions do not match");
+		                    }
+							else
+							{
+		                        MatrixSubtract sub = new MatrixSubtract();
+		                        threadPool = new ThreadPool(rowA);
+		                        answer = new int[rowA][colA];
+		                        r = new StringBuilder();
+		                        threadPool.run(sub);
+		                        genString(r,rowA,colA,answer);
+		                        row.set(0);
+		                        threadPool = null;
+		                        ResultText.setText(r.toString());
+		                    }
+							break;
+						case "Transpose":
+							MatrixTranspose transposition = new MatrixTranspose();
+		                    threadPool = new ThreadPool(nThreads);
+		                    answer = new int[colA][rowA];
+		                    r = new StringBuilder();
+		                    threadPool.run(transposition);
+		                    genString(r,colA,rowA,answer);
+		                    ResultText.setText(r.toString());
+		                    row.set(0);
+		                    threadPool = null;
+		                    break;
+						case "Matrix to Matrix Multiplication":
+							if (colA != rowB)
+							{
+		                        ResultText.setText("Matrix multiplication not possible");
+		                    }
+							else
+							{
+								threadPool = new ThreadPool(rowA);
+								r = new StringBuilder();
+								answer = new int[rowA][colB];
+						        MatrixMultiply runnable = new MatrixMultiply();
+						        threadPool.run(runnable);
+						        genString(r,rowA,colB,answer);
+			                    ResultText.setText(r.toString());
+			                    row.set(0);
+			                    threadPool = null;
+		                    }
+							break;
+						case "Matrix to Scalar Multiplication":
+							scalar = Integer.parseInt(BText.getText());
+							ScalarMultiply scalarMultiplication = new ScalarMultiply(scalar);
+							r = new StringBuilder();
+							answer = new int[rowA][colB];
+		                    threadPool = new ThreadPool(nThreads);
+		                    threadPool.run(scalarMultiplication);
+		                    genString(r,rowA,colB,answer);
+		                    ResultText.setText(r.toString());
+		                    row.set(0);
+		                    threadPool = null;
+							break;
+					}
+				}
+			}
+		});
+		AutoResetButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent a)
+			{
+				generateAuto();
+			}
+		});
+
+		generateAuto();
 		c.setBackground(DarkBlueBG);
 		c.setForeground(DarkBlueBG);
 		//display GUI
 		window.setVisible(true);
 	}
 
-	//main() : application entry point
-	public static void main(String[] args)
-	{
-		calcGUI gui = new calcGUI();
-	}
 }
