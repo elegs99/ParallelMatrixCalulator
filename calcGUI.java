@@ -422,9 +422,15 @@ public class calcGUI extends JFrame
 							break;
 					}
 			    }
-
+			    // Manual Mode. Parse request
 			    else
 				{
+			    	matA = parseMat(AText.getText(), true);
+			    	matB = parseMat(BText.getText(), false);
+			    	System.out.println("ColA:" +colA +" RowA:" + rowA);
+			    	System.out.println("ColB:" +colB +" RowB:" + rowB);
+			    	System.out.println(matA[0].length);
+			    	System.out.println(matB[4].length);
 			    	switch(s)
 					{
 						case "Matrix to Matrix Addition":
@@ -518,5 +524,87 @@ public class calcGUI extends JFrame
 		//display GUI
 		window.setVisible(true);
 	}
+	public static int[][] parseMat(String input, boolean isMatrixA) {
+        char c; char k;
+        int row = 0, col = 0, j = 0;
+        int countRow = 0, countCol = 0; // used to count rows and columns
+        int colPrev = 0; // used for size comparison
+        boolean first = true;
+        int[] arr = new int[input.length()];
 
+        for (int i = 0; i < input.length(); i++) // let's parse
+        {
+            c = input.charAt(i);
+            if (first)
+            { // first row, needed for counting columns
+                colPrev = countCol;
+            }
+
+            if (c == '[' && countRow == 0)
+            { // 1st character
+                countRow++;
+            }
+
+            else if (c == '[' && countRow == 1)
+            { // 2nd and other start row matrix character
+                countRow++;
+                row++;
+
+            }
+            else if (c == ' ' || c == ',' || c =='\n')
+            { // we don't want these
+
+            }
+
+            else if ((int) c >= 48 && ((int) c) <= 57)
+            {
+                arr[j] = ((int) c) - 48; // ASCII, everyone's favorite
+                k = input.charAt(i+1);
+                while(((int) k) >= 48 && ((int) k) <= 57)
+                {
+                	i++;
+                	arr[j] = (arr[j] * 10) + ((int) k) - 48;
+                	k = input.charAt(i+1);
+                }
+                countCol++; // each number is a new length of columns
+                j++;
+            }
+
+            else if (c == ']' && countRow == 2)
+            {
+                countRow--;
+                col = countCol;
+
+                if (colPrev != countCol) { // uh oh! bad size matrix
+                    return null;
+                } else {
+                    colPrev = countCol;
+                }
+                countCol = 0;
+                first = false;
+            }
+        }
+
+        if(isMatrixA)
+        {
+        	colA = col;
+        	rowA = row;
+        }
+        else
+        {
+        	colB = col;
+        	rowB = row;
+        }
+        int[][] retval = new int[row][col];
+        int z = 0;
+        for (int i = 0; i < row; i++) {
+            for (int a = 0; a < col; a++) {
+                retval[i][a] = arr[z];
+                z++; // used to go thru original array.
+            }
+        }
+
+        return retval;
+
+    }
 }
