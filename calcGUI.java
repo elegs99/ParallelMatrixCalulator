@@ -20,9 +20,9 @@ public class calcGUI extends JFrame
 	private JLabel OTag = new JLabel("Operation:");
 	private JLabel RTag = new JLabel("Result");
 
-	private JTextArea AText = new JTextArea();
-	private JTextArea BText = new JTextArea();
-	private JTextArea ResultText = new JTextArea(10,10);
+	private JTextArea AText = new JTextArea(20,20);
+	private JTextArea BText = new JTextArea(20,20);
+	private JTextArea ResultText = new JTextArea(20,20);
 
 	private JButton AButton = new JButton("Automatic");
 	private JButton MButton = new JButton("Manual");
@@ -38,6 +38,9 @@ public class calcGUI extends JFrame
 	private JPanel opDropBox = new JPanel(new FlowLayout());
 	private JPanel result = new JPanel(new GridBagLayout());
 	private JPanel clr = new JPanel(new FlowLayout());
+	private JScrollPane scrollA = new JScrollPane(AText,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	private JScrollPane scrollB = new JScrollPane(BText,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	private JScrollPane scrollR = new JScrollPane(ResultText,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 	private String[] Opts = {"Matrix to Matrix Addition", "Matrix to Matrix Subtraction",
 							"Matrix to Matrix Multiplication","Transpose",
@@ -77,10 +80,10 @@ public class calcGUI extends JFrame
 	// Populate the text areas with randomly generated compatible matrices
 	private void generateAuto()
 	{
-		rowA = 5;
-		colA = 5;
-		rowB = 5;
-		colB = 5;
+		rowA = 20;
+		colA = 20;
+		rowB = 20;
+		colB = 20;
 		matA = new int[rowA][colA];
 		matB = new int[rowB][colB];
 		a = new StringBuilder();
@@ -166,6 +169,8 @@ public class calcGUI extends JFrame
 		clrABButton.setBackground(Color.LIGHT_GRAY);
 		clrResButton.setBackground(Color.LIGHT_GRAY);
 		blank.setForeground(DarkBlueBG);
+
+
 	}
 
 	private void setup2(Container c)
@@ -206,7 +211,7 @@ public class calcGUI extends JFrame
 
 		gc.gridx = 0;
 		gc.gridy = 1;
-		m1.add(AText, gc);
+		m1.add(scrollA, gc);
 
 		gc.gridx = 0;
 		gc.gridy = 1;
@@ -223,7 +228,7 @@ public class calcGUI extends JFrame
 
 		gc.gridx = 0;
 		gc.gridy = 1;
-		m2.add(BText, gc);
+		m2.add(scrollB, gc);
 
 		gc.gridx = 0;
 		gc.gridy = 3;
@@ -238,9 +243,6 @@ public class calcGUI extends JFrame
 		gc.gridy = 5;
 		c.add(calcButton, gc);
 
-		gc.gridx = 0;
-		gc.gridy = 6;
-		c.add(blank2, gc);
 
 		// Create result component panel
 		gc.gridx = 0;
@@ -251,7 +253,7 @@ public class calcGUI extends JFrame
 		gc.gridx = 0;
 		gc.gridy = 1;
 		gc.anchor = GridBagConstraints.CENTER;
-		result.add(ResultText, gc);
+		result.add(scrollR, gc);
 
 		// Add result panel to container
 		gc.gridx = 0;
@@ -263,17 +265,13 @@ public class calcGUI extends JFrame
 		c.add(result, gc);
 
 		gc.gridx = 0;
-		gc.gridy = 9;
-		c.add(blank5, gc);
-
-		gc.gridx = 0;
 		gc.gridy = 10;
 		c.add(clr, gc);
 
-		AText.setPreferredSize(new Dimension(500, 100));
-		BText.setPreferredSize(new Dimension(500, 100));
-		ResultText.setPreferredSize(new Dimension(500, 100));
-		result.setPreferredSize(new Dimension(500, 200));
+		scrollA.setPreferredSize(new Dimension(500, 100));
+		scrollB.setPreferredSize(new Dimension(500, 100));
+		scrollR.setPreferredSize(new Dimension(500, 100));
+		result.setPreferredSize(new Dimension(700, 200));
 	}
 
 	//MatrixGUI(): constructor
@@ -286,6 +284,22 @@ public class calcGUI extends JFrame
 		Container c = window.getContentPane();
 		c.setLayout(LAYOUT_STYLE);
 		setup2(c);
+
+		operations.addActionListener (new ActionListener () {
+		    public void actionPerformed(ActionEvent e) {
+		        if(isAuto)
+		        {
+		        	switch((String)operations.getSelectedItem())
+		        	{
+		        		case "Matrix to Scalar Multiplication":
+		        			int a = (int)Math.random() * 10 + 1;
+				        	String s = Integer.toString(a);
+				        	BText.setText(s);
+		        			break;
+		        	}
+		        }
+		    }
+		});
 
 		AButton.addActionListener(new ActionListener()
 		{
@@ -510,6 +524,7 @@ public class calcGUI extends JFrame
 				}
 			}
 		});
+
 		AutoResetButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent a)
@@ -522,6 +537,7 @@ public class calcGUI extends JFrame
 		c.setBackground(DarkBlueBG);
 		c.setForeground(DarkBlueBG);
 		//display GUI
+		window.pack();
 		window.setVisible(true);
 	}
 	public static int[][] parseMat(String input, boolean isMatrixA) {
