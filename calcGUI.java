@@ -52,8 +52,6 @@ public class calcGUI extends JFrame
 	private JLabel blank1 = new JLabel(" ");
 	private JLabel blank2 = new JLabel(" ");
 	private JLabel blank3 = new JLabel(" ");
-	private JLabel blank4 = new JLabel(" ");
-	private JLabel blank5 = new JLabel(" ");
 
 	Color DarkBlueBG = new Color(44, 51, 58);
 	Color OliveText = new Color(96, 158, 71);
@@ -76,6 +74,7 @@ public class calcGUI extends JFrame
 	public static AtomicInteger row = new AtomicInteger(0);
 
 	private static boolean isAuto = true;
+	private static boolean isTransp = false;
 
 	// Populate the text areas with randomly generated compatible matrices
 	private void generateAuto()
@@ -287,17 +286,19 @@ public class calcGUI extends JFrame
 
 		operations.addActionListener (new ActionListener () {
 		    public void actionPerformed(ActionEvent e) {
-		        if(isAuto)
-		        {
-		        	switch((String)operations.getSelectedItem())
-		        	{
-		        		case "Matrix to Scalar Multiplication":
-		        			int a = (int)Math.random() * 10 + 1;
-				        	String s = Integer.toString(a);
-				        	BText.setText(s);
-		        			break;
-		        	}
-		        }
+	        	switch((String)operations.getSelectedItem())
+	        	{
+	        		case "Matrix to Scalar Multiplication":
+	        			int a = (int)Math.random() * 10 + 1;
+			        	String s = Integer.toString(a);
+			        	BText.setText(s);
+			        	isTransp = true;
+			        	System.out.println("Request registered");
+	        			break;
+	        		default:
+	        			isTransp = false;
+	        			break;
+	        	}
 		    }
 		});
 
@@ -440,11 +441,10 @@ public class calcGUI extends JFrame
 			    else
 				{
 			    	matA = parseMat(AText.getText(), true);
-			    	matB = parseMat(BText.getText(), false);
-			    	System.out.println("ColA:" +colA +" RowA:" + rowA);
-			    	System.out.println("ColB:" +colB +" RowB:" + rowB);
-			    	System.out.println(matA[0].length);
-			    	System.out.println(matB[4].length);
+			    	if(!isTransp)
+			    	{
+			    		matB = parseMat(BText.getText(), false);
+			    	}
 			    	switch(s)
 					{
 						case "Matrix to Matrix Addition":
@@ -540,6 +540,7 @@ public class calcGUI extends JFrame
 		window.pack();
 		window.setVisible(true);
 	}
+
 	public static int[][] parseMat(String input, boolean isMatrixA) {
         char c; char k;
         int row = 0, col = 0, j = 0;
@@ -619,8 +620,6 @@ public class calcGUI extends JFrame
                 z++; // used to go thru original array.
             }
         }
-
         return retval;
-
     }
 }
