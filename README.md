@@ -28,6 +28,6 @@ The terminal will then prompt the user for input through the command line.
 
 To see demo of GUI, type:
 
-javac calcGUI.java
+javac MatrixRedone.java
 
-java calcGUI
+java MatrixRedone
